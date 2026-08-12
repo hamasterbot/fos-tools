@@ -221,7 +221,7 @@ function App() {
             {/* Account Name (Account Copier) Navigation */}
             <div className="mt-2">
               <a
-                href="/account-copier.html"
+                href="fos-tools/account-copier.html"
                 className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full border border-white/30 text-white font-bold text-xs shadow-lg transition-all duration-300 hover:scale-105"
               >
                 <KeyRound className="w-3.5 h-3.5" />
