@@ -27,7 +27,6 @@
     }
 
     body {
-        /* সুন্দর গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড */
         background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
         background-attachment: fixed;
         color: var(--text-main);
@@ -273,10 +272,7 @@
         <textarea id="input" placeholder="এখানে Username/Password list paste করুন...
 
 উজারনেম: 1766994667
-পাসওয়ার্ড: Cure4unsolved1backhand:
-
-Username: admin123
-Pass: xyz789"></textarea>
+পাসওয়ার্ড: Cure4unsolved1backhand:"></textarea>
 
         <button id="loadBtn" onclick="loadAccounts()">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
@@ -302,21 +298,28 @@ const icons = {
 
 function loadAccounts() {
     const text = document.getElementById("input").value;
-
-    // বাংলা ও ইংরেজির যেকোনো কমন ফরমেট নিখুঁতভাবে ধরতে পারবে:
-    const usernameRegex = /(?:ইউজারনেম|ইউজার নেম|উজারনেম|আইডি|ইমেইল|ফোন|username|user\s*name|user|id|email|phone)\s*[:=\-]?\s*(.+)/gi;
-    const passwordRegex = /(?:পাসওয়ার্ড|পাসওয়ার্ড|পাস ওয়ার্ড|পাস|পিন|password|pass\s*word|pass|pwd|pin)\s*[:=\-]?\s*(.+)/gi;
-
+    const lines = text.split('\n');
+    
     const usernames = [];
     const passwords = [];
-    let match;
 
-    while ((match = usernameRegex.exec(text)) !== null) {
-        usernames.push(match[1].trim());
-    }
-
-    while ((match = passwordRegex.exec(text)) !== null) {
-        passwords.push(match[1].trim());
+    // লাইন-বাই-লাইন চেক করার ১০০% পারফেক্ট লজিক
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i].trim();
+        if (!line) continue;
+        
+        let lowerLine = line.toLowerCase();
+        
+        // ইউজারনেম চেক
+        if (lowerLine.match(/^(ইউজারনেম|উজারনেম|ইউজার নেম|আইডি|ইমেইল|ফোন|username|user name|user|id|email|phone)/)) {
+            let value = line.replace(/^(ইউজারনেম|উজারনেম|ইউজার নেম|আইডি|ইমেইল|ফোন|username|user name|user|id|email|phone)\s*[:=\-]?\s*/i, '');
+            usernames.push(value.trim());
+        }
+        // পাসওয়ার্ড চেক
+        else if (lowerLine.match(/^(পাসওয়ার্ড|পাসওয়ার্ড|পাস ওয়ার্ড|পাস|পিন|password|pass word|pass|pwd|pin)/)) {
+            let value = line.replace(/^(পাসওয়ার্ড|পাসওয়ার্ড|পাস ওয়ার্ড|পাস|পিন|password|pass word|pass|pwd|pin)\s*[:=\-]?\s*/i, '');
+            passwords.push(value.trim());
+        }
     }
 
     const container = document.getElementById("accounts");
