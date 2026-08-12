@@ -329,7 +329,7 @@ function loadAccounts() {
             usernames.push(getExactValue(line));
         }
         // যদি লাইনে পাস/pass/pwd/pin ইত্যাদি শব্দ থাকে
-        else if (lowerLine.includes('পাস') || lowerLine.includes('pass') || lowerLine.includes('pwd') || lowerLine.includes('pin') || lowerLine.includes('পিন')) {
+        else if (lowerLine.includes('পাস') || lowerLine.includes('pass') || lowerLine.includes('pwd') || lowerLine.includes('পাসওয়ার্ড') || lowerLine.includes('পিন')) {
             passwords.push(getExactValue(line));
         }
     }
