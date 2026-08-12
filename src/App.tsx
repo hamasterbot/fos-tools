@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { RefreshCw, Smartphone, Hash, Shuffle, Sparkles, Zap, Copy, Check, ClipboardCheck } from 'lucide-react';
+import { RefreshCw, Smartphone, Hash, Shuffle, Sparkles, Zap, Copy, Check, ClipboardCheck, KeyRound } from 'lucide-react';
 
 const BANGLADESHI_PREFIXES = ['013', '014', '015', '016', '017', '018', '019'];
 
@@ -35,6 +35,7 @@ function App() {
   const [copiedItems, setCopiedItems] = useState<{[key: string]: boolean}>({});
   const [generationMode, setGenerationMode] = useState<'sequential' | 'random'>('sequential');
   const [autoCopyEnabled, setAutoCopyEnabled] = useState(false);
+  const [removeLeadingZeroOne, setRemoveLeadingZeroOne] = useState(false);
 
   // Refs to track timeout IDs for copy operations
   const timeoutRefs = useRef<{[key: string]: NodeJS.Timeout}>({});
@@ -82,7 +83,8 @@ function App() {
     for (let i = 0; i < 5; i++) {
       const prefix = BANGLADESHI_PREFIXES[Math.floor(Math.random() * BANGLADESHI_PREFIXES.length)];
       const uniqueDigits = generateUniqueDigits(8);
-      const newNumber = prefix + uniqueDigits;
+      const fullNumber = prefix + uniqueDigits;
+      const newNumber = removeLeadingZeroOne ? fullNumber.slice(2) : fullNumber;
       newItems.push({
         type: 'mobile',
         value: newNumber,
@@ -215,6 +217,17 @@ function App() {
                 />
               </button>
             </div>
+
+            {/* Account Name (Account Copier) Navigation */}
+            <div className="mt-2">
+              <a
+                href="/account-copier.html"
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full border border-white/30 text-white font-bold text-xs shadow-lg transition-all duration-300 hover:scale-105"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                Account Name
+              </a>
+            </div>
           </div>
 
           {/* Single Generator Card */}
@@ -246,6 +259,37 @@ function App() {
                   placeholder="আমাকে trx দাও"
                   className="w-full px-3 py-2 rounded-lg border border-white/30 focus:outline-none focus:ring-1 focus:ring-yellow-300 focus:border-yellow-300 transition-all duration-300 text-xs font-semibold bg-white/20 backdrop-blur-sm text-white placeholder-white/70 shadow-inner"
                 />
+              </div>
+
+              {/* Mobile Number Format Toggle */}
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-white/30 bg-white/20 p-2 backdrop-blur-sm">
+                <div>
+                  <div className="text-xs font-bold text-white drop-shadow-md">Mobile Number Format</div>
+                  <div className="text-[11px] font-medium text-white/80">
+                    {removeLeadingZeroOne ? '01 বাদ দিয়ে ৯ ডিজিট — যেমন 543951087' : 'সম্পূর্ণ ১১ ডিজিট — যেমন 01543951087'}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={removeLeadingZeroOne}
+                  aria-label="জেনারেট করা নাম্বার থেকে 01 বাদ দিন"
+                  onClick={() => setRemoveLeadingZeroOne((enabled) => !enabled)}
+                  className={`relative inline-flex h-7 w-14 flex-shrink-0 items-center rounded-full border transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-300 focus:ring-offset-2 focus:ring-offset-purple-500 ${
+                    removeLeadingZeroOne
+                      ? 'border-green-200 bg-green-500'
+                      : 'border-white/40 bg-white/30'
+                  }`}
+                >
+                  <span className="sr-only">01 বাদ দিন</span>
+                  <span
+                    className={`inline-flex h-5 w-5 items-center justify-center rounded-full bg-white text-[8px] font-black shadow-md transition-transform duration-300 ${
+                      removeLeadingZeroOne ? 'translate-x-7 text-green-600' : 'translate-x-1 text-purple-500'
+                    }`}
+                  >
+                    {removeLeadingZeroOne ? 'ON' : 'OFF'}
+                  </span>
+                </button>
               </div>
 
               {/* Generation Mode Toggle */}
@@ -325,7 +369,7 @@ function App() {
               </div>
               
               <div className="space-y-1">
-                {generatedItems.map((item, index) => (
+                {generatedItems.map((item) => (
                   <div key={item.id} className={`flex items-center justify-between rounded-md p-2 backdrop-blur-sm ${
                     item.type === 'mobile' 
                       ? 'bg-emerald-500/20 border border-emerald-300/30' 
