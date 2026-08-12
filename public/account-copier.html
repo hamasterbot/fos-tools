@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Account Copier - FOS Tools</title>
+
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-hover: #4338ca;
+        --card-bg: #ffffff;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+        --success: #10b981;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Inter', sans-serif;
+    }
+
+    body {
+        background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+        background-attachment: fixed;
+        color: var(--text-main);
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #1e293b;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(5px);
+        padding: 6px 12px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+        background: #fff;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 12px;
+        padding-top: 4px;
+    }
+
+    h2 {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+    }
+
+    .input-section {
+        background: var(--card-bg);
+        padding: 12px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        margin-bottom: 15px;
+    }
+
+    textarea {
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        resize: vertical;
+        font-size: 13px;
+        background: #f8fafc;
+        color: var(--text-main);
+        transition: all 0.3s ease;
+        line-height: 1.4;
+    }
+
+    textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    button {
+        width: 100%;
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px;
+        margin-top: 10px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+    }
+
+    button:hover {
+        background: var(--primary-hover);
+        box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.4);
+    }
+
+    button:active {
+        transform: translateY(1px);
+        box-shadow: 0 2px 4px -1px rgba(79, 70, 229, 0.3);
+    }
+
+    .account {
+        background: var(--card-bg);
+        margin-bottom: 10px;
+        padding: 12px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        animation: slideUp 0.2s ease-out;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .number {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .field-group {
+        margin-bottom: 8px;
+    }
+
+    .field-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .label {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .copyBox {
+        background: #f1f5f9;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-main);
+        word-break: break-all;
+        cursor: pointer;
+        user-select: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid transparent;
+        transition: all 0.2s;
+    }
+
+    .copyBox:hover {
+        background: #e2e8f0;
+        border-color: #cbd5e1;
+    }
+
+    .copyBox:active {
+        transform: scale(0.98);
+    }
+
+    .copyBox .icon-wrapper {
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+    }
+
+    .copyBox.copied {
+        background: #ecfdf5;
+        border-color: #a7f3d0;
+        color: var(--success);
+    }
+
+    .copyBox.copied .icon-wrapper {
+        color: var(--success);
+    }
+
+    .password-text {
+        color: #e11d48;
+        font-family: monospace;
+        font-size: 14px;
+    }
+
+    .empty {
+        text-align: center;
+        color: var(--text-muted);
+        margin-top: 15px;
+        font-size: 13px;
+        font-weight: 500;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(5px);
+        padding: 15px;
+        border-radius: 12px;
+        border: 1px dashed #cbd5e1;
+    }
+
+    #toast {
+        position: fixed;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--text-main);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        transition: bottom 0.3s ease;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    #toast.show {
+        bottom: 20px;
+    }
+
+    svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .header svg {
+        width: 20px;
+        height: 20px;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <a class="back-link" href="/">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        Back to FOS Tools
+    </a>
+
+    <div class="header">
+        <h2>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Account Copier
+        </h2>
+    </div>
+
+    <div class="input-section">
+        <textarea id="input" placeholder="এখানে Username/Password list paste করুন...
+
+উজারনেম: 123456
+পাসওয়ার্ড: abc123
+উজারনেম: 789012
+পাসওয়ার্ড: xyz789"></textarea>
+
+        <button id="loadBtn" onclick="loadAccounts()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"></polyline><rect x="1" y="3" width="22" height="5"></rect><line x1="10" y1="12" x2="14" y2="12"></line></svg>
+            Extract Accounts
+        </button>
+    </div>
+
+    <div id="accounts"></div>
+</div>
+
+<div id="toast">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+    Successfully Copied!
+</div>
+
+<script>
+const icons = {
+    user: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`,
+    lock: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
+    copy: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`,
+    check: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+};
+
+function loadAccounts() {
+    const text = document.getElementById("input").value;
+
+    const usernameRegex = /(?:উজারনেম|username|user\s*name)\s*:\s*(.*)/gi;
+    const passwordRegex = /(?:পাসওয়ার্ড|password|pass\s*word)\s*:\s*(.*)/gi;
+
+    const usernames = [];
+    const passwords = [];
+    let match;
+
+    while ((match = usernameRegex.exec(text)) !== null) {
+        usernames.push(match[1].trim());
+    }
+
+    while ((match = passwordRegex.exec(text)) !== null) {
+        passwords.push(match[1].trim());
+    }
+
+    const container = document.getElementById("accounts");
+    container.innerHTML = "";
+
+    const total = Math.max(usernames.length, passwords.length);
+
+    if (total === 0) {
+        container.innerHTML = `
+            <div class="empty">
+                <svg style="width: 32px; height: 32px; color: #94a3b8; margin-bottom: 5px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <br>কোনো সঠিক ফরম্যাটের Account পাওয়া যায়নি।
+            </div>`;
+        return;
+    }
+
+    for (let i = 0; i < total; i++) {
+        const username = usernames[i] || "";
+        const password = passwords[i] || "";
+
+        const account = document.createElement("div");
+        account.className = "account";
+
+        account.innerHTML = `
+            <div class="number">
+                <span>Account ${i + 1}</span>
+            </div>
+
+            <div class="field-group">
+                <div class="label">${icons.user} Username</div>
+                <div class="copyBox" data-copy="${escapeAttr(username)}">
+                    <span>${escapeHtml(username)}</span>
+                    <span class="icon-wrapper">${icons.copy}</span>
+                </div>
+            </div>
+
+            <div class="field-group">
+                <div class="label">${icons.lock} Password</div>
+                <div class="copyBox" data-copy="${escapeAttr(password)}">
+                    <span class="password-text">${escapeHtml(password)}</span>
+                    <span class="icon-wrapper">${icons.copy}</span>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(account);
+    }
+
+    document.querySelectorAll(".copyBox").forEach(box => {
+        box.addEventListener("click", function() {
+            const textToCopy = this.getAttribute("data-copy");
+            copyText(textToCopy);
+
+            const iconWrapper = this.querySelector('.icon-wrapper');
+            const originalIcon = icons.copy;
+
+            this.classList.add('copied');
+            iconWrapper.innerHTML = icons.check;
+
+            setTimeout(() => {
+                this.classList.remove('copied');
+                iconWrapper.innerHTML = originalIcon;
+            }, 1500);
+        });
+    });
+}
+
+function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+        .then(showCopied)
+        .catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+}
+
+function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+        document.execCommand("copy");
+        showCopied();
+    } catch (e) {
+        alert("Copy করা যায়নি");
+    }
+
+    document.body.removeChild(textarea);
+}
+
+function showCopied() {
+    const toast = document.getElementById("toast");
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2000);
+}
+
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function escapeAttr(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
+</script>
+
+</body>
+</html>
