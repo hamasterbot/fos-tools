@@ -296,6 +296,20 @@ const icons = {
     check: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
 };
 
+// এই ফাংশনটি কোলন বা হাইফেনের পরের সবকিছু হুবহু কপি করবে
+function getExactValue(text) {
+    let index = text.search(/[:=\-]/);
+    if (index !== -1) {
+        return text.substring(index + 1).trim();
+    } else {
+        let spaceIndex = text.indexOf(' ');
+        if (spaceIndex !== -1) {
+            return text.substring(spaceIndex + 1).trim();
+        }
+        return text;
+    }
+}
+
 function loadAccounts() {
     const text = document.getElementById("input").value;
     const lines = text.split('\n');
@@ -303,22 +317,20 @@ function loadAccounts() {
     const usernames = [];
     const passwords = [];
 
-    // লাইন-বাই-লাইন চেক করার ১০০% পারফেক্ট লজিক
+    // এখন আর কোনো জটিল কোড নেই, শুধু লাইন খুঁজবে আর ভ্যালু বের করবে
     for (let i = 0; i < lines.length; i++) {
         let line = lines[i].trim();
         if (!line) continue;
         
         let lowerLine = line.toLowerCase();
         
-        // ইউজারনেম চেক
-        if (lowerLine.match(/^(ইউজারনেম|উজারনেম|ইউজার নেম|আইডি|ইমেইল|ফোন|username|user name|user|id|email|phone)/)) {
-            let value = line.replace(/^(ইউজারনেম|উজারনেম|ইউজার নেম|আইডি|ইমেইল|ফোন|username|user name|user|id|email|phone)\s*[:=\-]?\s*/i, '');
-            usernames.push(value.trim());
+        // যদি লাইনে উজার/ইউজার/user/id ইত্যাদি শব্দ থাকে
+        if (lowerLine.includes('উজার') || lowerLine.includes('ইউজার') || lowerLine.includes('user') || lowerLine.includes('id') || lowerLine.includes('email') || lowerLine.includes('phone') || lowerLine.includes('ফোন')) {
+            usernames.push(getExactValue(line));
         }
-        // পাসওয়ার্ড চেক
-        else if (lowerLine.match(/^(পাসওয়ার্ড|পাসওয়ার্ড|পাস ওয়ার্ড|পাস|পিন|password|pass word|pass|pwd|pin)/)) {
-            let value = line.replace(/^(পাসওয়ার্ড|পাসওয়ার্ড|পাস ওয়ার্ড|পাস|পিন|password|pass word|pass|pwd|pin)\s*[:=\-]?\s*/i, '');
-            passwords.push(value.trim());
+        // যদি লাইনে পাস/pass/pwd/pin ইত্যাদি শব্দ থাকে
+        else if (lowerLine.includes('পাস') || lowerLine.includes('pass') || lowerLine.includes('pwd') || lowerLine.includes('pin') || lowerLine.includes('পিন')) {
+            passwords.push(getExactValue(line));
         }
     }
 
